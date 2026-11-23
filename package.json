@@ -1,0 +1,77 @@
+{
+  "name": "omagari-hare",
+  "version": "0.1.0",
+  "description": "小钩晴 · 独立 Windows 桌面伙伴",
+  "main": "src/main.cjs",
+  "private": true,
+  "author": "baidishi09",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.cjs",
+    "test:integration": "node scripts/integration.cjs",
+    "check": "node scripts/check.cjs",
+    "icons": "node scripts/build-icon.cjs",
+    "pack": "electron-builder --win --dir",
+    "dist": "electron-builder --win portable nsis",
+    "dist:portable": "electron-builder --win portable"
+  },
+  "build": {
+    "appId": "io.github.baidishi09.omagarihare",
+    "productName": "Omagari Hare",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json",
+      "LICENSE"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/hare.ico",
+      "signExecutable": false
+    },
+    "portable": {
+      "artifactName": "Omagari-Hare-${version}-${arch}-portable.${ext}"
+    },
+    "nsis": {
+      "artifactName": "Omagari-Hare-${version}-${arch}-nsis.${ext}",
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "小钩晴"
+    }
+  },
+  "overrides": {
+    "app-builder-lib": {
+      "minimatch": "^11.0.1"
+    },
+    "@electron/universal": {
+      "minimatch": "^11.0.1"
+    }
+  },
+  "devDependencies": {
+    "electron": "45.4.1",
+    "electron-builder": "26.18.0",
+    "playwright": "1.65.1",
+    "png-to-ico": "3.0.2",
+    "pngjs": "7.0.0"
+  }
+}
