@@ -32,9 +32,13 @@ function selectedDisplay() {
 }
 
 function payload() {
+  const status = controller.snapshot();
+  const geometry = getPatrolGeometry(selectedDisplay(), settings);
+  const travelRatio = geometry.right > geometry.left
+    ? Math.max(0, Math.min(1, (status.x - geometry.left) / (geometry.right - geometry.left))) : 0;
   return {
     settings,
-    status: { ...controller.snapshot(), idleSeconds },
+    status: { ...status, idleSeconds, travelRatio },
     displays: screen.getAllDisplays().map((display, index) => ({
       id: String(display.id),
       label: display.label || `屏幕 ${index + 1} · ${display.size.width} × ${display.size.height}`,
@@ -79,7 +83,7 @@ function openSettings() {
   }
   settingsWindow = new BrowserWindow({
     width: 1000, height: 790, minWidth: 800, minHeight: 640,
-    title: '小钩晴 · 陪伴设置', backgroundColor: '#F6F7FB', autoHideMenuBar: true,
+    title: '小钩晴 · 窗边工位', backgroundColor: '#252b38', autoHideMenuBar: true,
     icon: path.join(assets, 'hare-idle.png'), show: false,
     webPreferences: { preload: path.join(__dirname, 'preload.cjs'), sandbox: true, contextIsolation: true, nodeIntegration: false }
   });
@@ -185,7 +189,7 @@ function updateTray() {
   if (!tray) return;
   const safe = handler => () => { try { handler(); } catch (error) { dialog.showErrorBox('小钩晴', error.message); } };
   tray.setContextMenu(Menu.buildFromTemplate([
-    { label: '小钩晴 · 陪伴设置', click: openSettings },
+    { label: '小钩晴 · 窗边工位', click: openSettings },
     { type: 'separator' },
     { label: '现在散步', enabled: !settings.paused && !suspended, click: safe(() => act('walk')) },
     { label: '回到停靠点', click: safe(() => act('home')) },

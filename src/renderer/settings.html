@@ -4,57 +4,62 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'">
-  <title>小钩晴 · 陪伴设置</title>
+  <title>小钩晴 · 窗边的休息角</title>
   <link rel="stylesheet" href="settings.css">
-  <script src="settings.js" defer></script>
+  <script src="settings.js" type="module"></script>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <a class="brand" href="#main" aria-label="小钩晴，跳到陪伴设置"><span class="brand-mark" aria-hidden="true">晴</span><span>小钩晴<span class="brand-en">OMAGARI HARE</span></span></a>
-      <div class="topbar-meta"><span class="offline-dot" aria-hidden="true"></span> 桌面陪伴<span class="meta-divider"></span><span id="version">v0.1.0</span></div>
+  <main id="main" class="room" aria-label="小钩晴的窗边休息角">
+    <img class="room-background" src="../../assets/hare-workbench.png" alt="傍晚的窗边工作台，台灯照着书和小小的工程工具" draggable="false">
+    <header class="room-header">
+      <div class="room-name"><span class="name-halo" aria-hidden="true"></span><span>小钩晴<small>窗边的休息角</small></span></div>
+      <button id="settings-button" class="settings-entry" type="button" aria-haspopup="dialog" aria-controls="settings-drawer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg>设置</button>
     </header>
-    <div id="demo-banner" class="demo-banner" hidden>界面预览模式 · 此处的设置不会保存，也不会控制桌宠。</div>
-    <div class="workspace">
-      <aside class="companion-panel" aria-label="小钩晴的状态">
-        <div class="companion-heading"><span class="eyebrow">YOUR QUIET COMPANION</span><h1>今天也，<br>慢慢来。</h1><p>你专心的时候，<br>我会安静待在这里。</p></div>
-        <div class="character-stage"><span class="stage-orbit orbit-one" aria-hidden="true"></span><span class="stage-orbit orbit-two" aria-hidden="true"></span><img src="../../assets/hare-idle.png" width="192" height="208" alt="银灰马尾、穿着白大褂的小钩晴" class="hero-pet" draggable="false"><div class="ground-line" aria-hidden="true"><i></i><i></i></div></div>
-        <div class="companion-state"><span class="state-dot" id="state-dot" aria-hidden="true"></span><span id="phase-label">正在安静陪伴</span></div>
-        <p class="idle-status" id="idle-status">闲置 10 分钟后，出去走一走</p>
-        <div class="companion-note"><span aria-hidden="true">✳</span><p>“嗯……去走一小圈，<br>回来继续陪你。”</p></div>
-        <div class="sidebar-footer">真理部 · 桌面观察日记<span>01 / 晴</span></div>
-      </aside>
-      <main id="main" class="settings-main">
-        <div class="main-heading"><div><span class="eyebrow">MAKE YOURSELF AT HOME</span><h2>陪伴，刚刚好。</h2><p>留一点空间，给她自己的小日常。</p></div><span class="edition-tag">DESKTOP EDITION</span></div>
-        <section class="settings-section" aria-labelledby="walk-title">
-          <div class="section-heading"><span class="section-number">01</span><h3 id="walk-title">散步的小习惯</h3><span class="section-caption">不打断你的工作</span></div>
-          <div class="idle-control">
-            <div><label for="idle-minutes">电脑闲置多久后出发？</label><p>没有键盘或鼠标操作时开始计时</p></div>
-            <div class="number-unit"><input id="idle-minutes" type="number" min="1" max="120" step="1" inputmode="numeric" aria-describedby="idle-help" required><span>分钟</span></div>
-          </div>
-          <div class="route" aria-label="从停靠点出发，到最左侧，再到最右侧，然后回到停靠点"><span class="route-stop"><i class="home-point"></i>停靠点</span><span class="route-track" aria-hidden="true">→</span><span class="route-stop"><i></i>最左侧</span><span class="route-track" aria-hidden="true">→</span><span class="route-stop"><i></i>最右侧</span><span class="route-track" aria-hidden="true">→</span><span class="route-stop"><i class="home-point"></i>回家</span></div>
-          <p id="idle-help" class="helper-text">每次闲置只走一圈；你回来操作时，她会提前回到停靠点。</p>
-          <div class="action-row"><button id="walk-button" class="button button-primary" type="button"><span aria-hidden="true">↗</span> 现在去散步</button><button id="home-button" class="button button-secondary" type="button">回到停靠点</button><button id="pause-button" class="button button-text" type="button" aria-pressed="false">暂停陪伴</button></div>
-        </section>
-        <section class="settings-section appearance-section" aria-labelledby="appearance-title">
-          <div class="section-heading"><span class="section-number">02</span><h3 id="appearance-title">她在桌面上的样子</h3></div>
-          <div class="range-grid">
-            <div class="range-field"><div class="field-label"><label for="pet-height">角色大小</label><output id="height-output" for="pet-height">156 px</output></div><input id="pet-height" type="range" min="96" max="240" step="4"><div class="range-endpoints"><span>小巧</span><span>醒目</span></div></div>
-            <div class="range-field"><div class="field-label"><label for="speed">散步速度</label><output id="speed-output" for="speed">70 px/s</output></div><input id="speed" type="range" min="20" max="180" step="5"><div class="range-endpoints"><span>悠闲</span><span>轻快</span></div></div>
-          </div>
-          <div class="display-field"><label for="display">陪伴的屏幕</label><select id="display"><option value="primary">主显示器</option></select></div>
-        </section>
-        <section class="settings-section details-section" aria-labelledby="details-title">
-          <div class="section-heading"><span class="section-number">03</span><h3 id="details-title">一些贴心的小设置</h3></div>
-          <div class="switch-grid">
-            <label class="switch-row" for="always-on-top"><span><strong>保持在最上层</strong><small>让她待在应用窗口上方</small></span><input id="always-on-top" type="checkbox" role="switch"><span class="switch-track" aria-hidden="true"></span></label>
-            <label class="switch-row" for="click-through"><span><strong>鼠标点击穿透</strong><small>开启后可从托盘进入设置</small></span><input id="click-through" type="checkbox" role="switch"><span class="switch-track" aria-hidden="true"></span></label>
-            <label class="switch-row" for="launch-at-login"><span><strong>登录时来陪你</strong><small id="login-help">随 Windows 登录自动启动</small></span><input id="launch-at-login" type="checkbox" role="switch" aria-describedby="login-help"><span class="switch-track" aria-hidden="true"></span></label>
-          </div>
-        </section>
-        <footer class="settings-footer"><p><span aria-hidden="true">↖</span> 轻点挥手 · 双击跳跃 · 拖动安家 · 右键设置</p><span id="save-status" role="status" aria-live="polite">设置会自动保存</span></footer>
-      </main>
+    <section class="room-greeting" aria-label="陪伴状态">
+      <p class="greeting-overline"><span id="state-dot" class="state-dot" aria-hidden="true"></span><span>小小的陪伴，照常进行</span></p>
+      <h1 id="phase-label">我在这里。</h1>
+      <p id="idle-status">再闲置 10 分钟，就去走一圈。</p>
+    </section>
+    <button id="habits-button" class="habit-note" type="button" aria-haspopup="dialog" aria-controls="settings-drawer" aria-label="调整散步习惯">
+      <span class="note-pin" aria-hidden="true"></span><span class="note-title">散步的小约定</span>
+      <span class="note-copy">闲下来 <strong id="habit-minutes">10 分钟</strong>，<br>就去走一圈。</span>
+      <span class="note-link">改改小习惯 <span aria-hidden="true">↗</span></span>
+    </button>
+    <div id="scene-actor" class="scene-actor"><span class="actor-shadow" aria-hidden="true"></span><canvas id="scene-pet" width="204" height="221" role="img" aria-label="小钩晴的动作预览"></canvas></div>
+    <p id="interaction-feedback" class="interaction-feedback" role="status" aria-live="polite" hidden></p>
+    <nav class="action-bar" aria-label="和小钩晴互动">
+      <div class="action-group"><button id="walk-button" type="button" class="room-action primary-action"><span aria-hidden="true">↗</span> 散步</button><button id="wave-button" type="button" class="room-action">挥挥手</button><button id="jump-button" type="button" class="room-action">小跳一下</button></div>
+      <span class="action-divider" aria-hidden="true"></span>
+      <div class="action-group secondary-actions"><button id="home-button" type="button" class="room-action">回家</button><button id="pause-button" type="button" class="room-action" aria-pressed="false">暂停</button></div>
+    </nav>
+    <p class="room-tip">任务栏上，也有她的小小身影。</p>
+    <div id="demo-banner" class="demo-banner" hidden>界面演示 · 这里的操作不会保存或控制桌宠</div>
+  </main>
+  <dialog id="settings-drawer" class="settings-drawer" aria-labelledby="drawer-title">
+    <header class="drawer-header"><div><p>小钩晴的工程笔记</p><h2 id="drawer-title">把日常调成喜欢的样子。</h2></div><button id="close-settings" type="button" class="close-settings" aria-label="关闭设置">×</button></header>
+    <div class="drawer-content">
+      <section class="drawer-section" aria-labelledby="walk-title">
+        <h3 id="walk-title">出门</h3>
+        <div class="idle-control"><div><label for="idle-minutes">闲下来多久，出去走走？</label><p>没有键盘或鼠标操作时开始计时</p></div><div class="number-unit"><input id="idle-minutes" type="number" min="1" max="120" step="1" inputmode="numeric" aria-describedby="idle-help" required><span>分钟</span></div></div>
+        <p id="idle-help" class="field-help">每次闲置只走一圈：从停靠点到最左侧，再到最右侧，最后回家。你回来操作时，她会提前往回走。</p>
+        <div class="range-field"><div class="field-label"><label for="speed">散步的步调</label><output id="speed-output" for="speed">70 px/s</output></div><input id="speed" type="range" min="20" max="180" step="5"><div class="range-endpoints"><span>悠闲一点</span><span>轻快一点</span></div></div>
+      </section>
+      <section class="drawer-section" aria-labelledby="appearance-title">
+        <h3 id="appearance-title">样子</h3>
+        <div class="range-field"><div class="field-label"><label for="pet-height">桌面上的角色大小</label><output id="height-output" for="pet-height">156 px</output></div><input id="pet-height" type="range" min="96" max="240" step="4"><div class="range-endpoints"><span>小巧</span><span>醒目</span></div></div>
+        <div class="display-field"><label for="display">待在哪一块屏幕？</label><select id="display"><option value="primary">跟随主显示器</option></select></div><p class="field-help">在桌面上拖动她，可以重新安排停靠点。</p>
+      </section>
+      <section class="drawer-section" aria-labelledby="details-title">
+        <h3 id="details-title">在桌面上</h3>
+        <div class="switch-list">
+          <label class="switch-row" for="always-on-top"><span><strong>待在窗口上面</strong><small>开启后，她会显示在其他应用窗口上方。</small></span><input id="always-on-top" type="checkbox" role="switch"><span class="switch-track" aria-hidden="true"></span></label>
+          <label class="switch-row" for="click-through"><span><strong>让鼠标穿过去</strong><small>鼠标会穿过她，点不到她；可以从托盘恢复。</small></span><input id="click-through" type="checkbox" role="switch"><span class="switch-track" aria-hidden="true"></span></label>
+          <label class="switch-row" for="launch-at-login"><span><strong>登录电脑时，就来陪你</strong><small id="login-help">随 Windows 登录自动启动。</small></span><input id="launch-at-login" type="checkbox" role="switch" aria-describedby="login-help"><span class="switch-track" aria-hidden="true"></span></label>
+        </div>
+      </section>
+      <p class="interaction-help">轻点挥手 · 双击小跳 · 拖动安家 · 右键设置</p>
     </div>
-  </div>
+    <footer class="drawer-footer"><span id="save-status" role="status" aria-live="polite">设置会自动保存</span><span id="version">v0.1.0</span></footer>
+  </dialog>
 </body>
 </html>

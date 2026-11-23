@@ -2,9 +2,9 @@
 
 一个独立运行的 Windows 桌宠。你操作电脑时，她在任务栏旁安静呼吸；默认连续 **10 分钟**没有键盘或鼠标操作后，沿任务栏上沿散步一圈，再回到停靠点。关闭 Codex 不影响她运行。
 
-![小钩晴动作预览](assets/motion-preview.gif)
+![小钩晴的窗边工位主页](docs/home-scene.png)
 
-![陪伴设置](docs/settings-preview.png)
+主页是一张安静的窗边工位：小钩晴站在桌面上，与你桌面上的角色共用原有动画图集。场景显示真实的待机、巡游、返程与暂停状态；常用动作留在桌沿下方，低频参数收进右侧设置抽屉。
 
 ## 开始陪伴
 
@@ -13,24 +13,32 @@
 - **便携版**：`release/Omagari-Hare-0.1.0-x64-portable.exe`，直接双击。
 - **安装版**：`release/Omagari-Hare-0.1.0-x64-nsis.exe`，安装后启动“小钩晴”；安装版可在设置中选择随 Windows 登录启动。
 
-这些路径是本地构建输出，不代表已在 GitHub 发布可下载文件。首次启动会打开陪伴设置；之后可右键角色或点击系统托盘图标再次打开。关闭设置窗口后桌宠仍在运行，从托盘选择“退出小钩晴”结束程序。
+这些路径是本地构建输出，不代表已在 GitHub 发布可下载文件。首次启动会打开工位主页；之后可右键桌面角色或点击系统托盘图标再次打开。点击主页的设置按钮或工程便签都能展开设置抽屉。关闭主页窗口后桌宠仍在运行，从托盘选择“退出小钩晴”结束程序。
 
 | 操作 | 效果 |
 | --- | --- |
 | 轻点角色 | 挥手 |
 | 双击角色 | 小跳 |
 | 拖动角色 | 沿当前屏幕下沿调整并保存停靠点 |
-| 右键角色 | 打开设置 |
-| 现在去散步 | 立即体验一趟巡游 |
+| 右键桌面角色 | 打开工位主页 |
+| 主页散步按钮 | 立即体验一趟巡游 |
+| 主页挥手／小跳按钮 | 在当前状态允许时触发对应角色动作 |
 | 回到停靠点 | 提前返程 |
 | 暂停陪伴／暂停散步 | 立即归位并停止自动出发 |
+| 主页设置按钮／工程便签 | 打开同一个设置抽屉 |
 | 点击穿透 | 角色不再接收鼠标点击；从托盘恢复或打开设置 |
 
 默认路线从左侧出发，到最右侧后回到原地。拖动设置停靠点后，路线为 **停靠点 → 最左侧 → 最右侧 → 停靠点**。每次闲置只自动走一圈；你恢复输入时，她提前回家，下一次达到完整闲置时长后再出发。暂停后继续、解锁或从休眠恢复时，会等待新的输入再开始下一轮闲置计时。
 
 安静待机时，靠近她脸部的鼠标会触发八个主要方向的注视，范围为距脸部参考点 20–220 DIP。它是离散姿势响应，不是连续转头动画。
 
+工位里的动态角色是实际桌宠状态的预览，位置与朝向跟随巡游进度；挥手、小跳在主进程确认后播放。主页不生成虚构的聊天、情绪数值或工作记录。环境背景和角色分开绘制，角色继续使用原有 `hare-atlas.png`；全部在本地运行，无需在线服务。
+
 ## 可调设置
+
+![陪伴设置抽屉](docs/settings-drawer.png)
+
+设置抽屉集中容纳闲置时间、大小、速度、显示器和系统开关；可通过关闭按钮或 Escape 收起，回到工位场景。工程便签与常规设置按钮提供相同入口，不需要记忆隐藏手势。
 
 | 设置 | 默认值 | 范围或说明 |
 | --- | --- | --- |
@@ -59,6 +67,7 @@ npm start
 npm test
 npm run check
 npm run test:integration
+npm run test:ui
 npm run dist
 ```
 
@@ -67,6 +76,7 @@ npm run dist
 | `npm test` | Node 单元测试：巡游状态机、几何边界和设置处理 |
 | `npm run check` | JavaScript 语法及动画图集规格检查 |
 | `npm run test:integration` | Playwright 启动 Electron，检查窗口、渲染、设置及行为；临时资料和产物放在忽略提交的 `test-results/` |
+| `npm run test:ui` | 检查工位主页、设置抽屉及相关界面交互；实际通过情况见验证记录 |
 | `npm run pack` | 生成 `release/win-unpacked/` 开发检查包 |
 | `npm run dist` | 生成 x64 便携版和 NSIS 安装程序 |
 
@@ -78,11 +88,15 @@ npm run dist
 
 - `src/main.cjs`：Electron 进程、透明窗口、托盘、系统闲置检测和屏幕事件。
 - `src/core/`：与窗口解耦的巡游状态机、工作区几何和设置约束。
-- `src/renderer/`：精灵绘制、点按与拖动、中文设置页。
+- `src/renderer/`：精灵绘制、点按与拖动、工位主页及中文设置抽屉。
 - `assets/animations.json`：每帧时长与图集坐标，含 `feetY=201` 的固定脚底基线。
+- `assets/hare-workbench.png`：单独生成的无人物窗边工位背景，动态角色在其上独立绘制。
 - `docs/character-design.md`：完整形象、色彩、动作语义和行为设计。
+- `docs/design-review.md`：Gemini 4 Neon Medium 与 Claude Opus 5.5 Medium 的实际设计评审记录和采用说明。
 
 闲置与锁屏事件使用 Electron [`powerMonitor`](https://www.electronjs.org/docs/latest/api/power-monitor)，显示器工作区及鼠标位置使用 [`screen`](https://www.electronjs.org/docs/latest/api/screen)，透明、不抢键盘焦点的角色窗口由 [`BrowserWindow`](https://www.electronjs.org/docs/latest/api/browser-window) 承载。
+
+场景主页与参数抽屉的设计依据见 [设计复核](docs/design-review.md)；这份记录是设计输入，不代表外部模型替项目做了实现或测试。现有九类动作可查看 [动作预览](assets/motion-preview.gif)，背景生成提示词见 [工位背景记录](docs/prompts/workbench.md)。
 
 ## 已知边界
 

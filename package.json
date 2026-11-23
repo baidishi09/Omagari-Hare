@@ -10,6 +10,7 @@
     "start": "electron .",
     "test": "node --test test/*.test.cjs",
     "test:integration": "node scripts/integration.cjs",
+    "test:ui": "node scripts/ui-smoke.cjs",
     "check": "node scripts/check.cjs",
     "icons": "node scripts/build-icon.cjs",
     "pack": "electron-builder --win --dir",

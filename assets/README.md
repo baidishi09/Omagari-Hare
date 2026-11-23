@@ -8,9 +8,10 @@
 | `hare-idle.png` | 待机首帧，192 × 208 | 同版 `idle/00.png` |
 | `hare-reference.png` | 形象母版，供设计核对 | 已有 `refined-20261110` 的 `hare-master.png` |
 | `motion-preview.gif` | 九个动作的展示预览，有展示背景 | 同版 `all-states.gif` |
+| `hare-workbench.png` | 无人物的窗边工位背景，1536 × 1024 | 2026-11-24 使用内置 ImageGen 全新生成，原样保存 |
 | `animations.json` | 单元尺寸、脚底基线、行号及逐帧时长 | 根据上述既有资源整理 |
 
-这些图像从项目所有者已有的小钩晴素材原样复制。本次独立应用适配没有重新生成角色，也没有改动图像像素。此前的制作记录表明，角色图像由 ImageGen 按角色参考生成，再进行透明化、对齐和组装。
+角色图像从项目所有者已有的小钩晴素材原样复制。本次独立应用适配没有重新生成角色，也没有改动角色图像像素。此前的制作记录表明，角色图像由 ImageGen 按角色参考生成，再进行透明化、对齐和组装。窗边工位背景是单独生成的环境插画，未画入人物，便于现有透明桌宠独立动画；完整提示词、查看结论与布局坐标见 [背景生成记录](../docs/prompts/workbench.md)。
 
 ## 使用约定
 
@@ -31,6 +32,7 @@ hare-atlas.png      5b7c74b669f4352072156dbdac90f5ad241056a6312f15b27dd127f9b70c
 hare-idle.png       f75780fcbe378d521d9659728069e5d5d6071335b557e1223cd6418f9fbcc640
 hare-reference.png  1994102fb3930397edf2a4889aeb57a19226b43167cf1d43ed96f31c747354b8
 motion-preview.gif b15f924d25eb91ad0cd2474a47720b4b73cbb3dffde45fac98f1ce0eb3da00ba
+hare-workbench.png  9a418318b93db7a673308399b1a5917b756beaf7d22dddcd63c88e9c30eef2d6
 ```
 
 ## 角色与图像权利
