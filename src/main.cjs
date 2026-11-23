@@ -152,10 +152,25 @@ function placePet() {
   }
 }
 
+function readLaunchAtLogin(fallback = false) {
+  if (!app.isPackaged || process.env.PORTABLE_EXECUTABLE_FILE) return false;
+  try {
+    return app.getLoginItemSettings({ path: process.execPath, args: ['--hidden'] }).openAtLogin;
+  } catch (error) {
+    console.warn('Could not read login registration:', error.message);
+    return fallback;
+  }
+}
+
 function saveSettings(patch) {
   if (!patch || typeof patch !== 'object' || Array.isArray(patch)) throw new Error('设置格式无效。');
   const next = mergeSettings(settings, patch);
-  const loginChanged = next.launchAtLogin !== settings.launchAtLogin;
+  // Windows startup settings can change outside this process. A shared portable
+  // profile must not hide an installed copy's existing registration, and editing
+  // an unrelated preference must never restore a startup entry the user removed.
+  const registeredAtLogin = readLaunchAtLogin(settings.launchAtLogin);
+  if (!Object.hasOwn(patch, 'launchAtLogin')) next.launchAtLogin = registeredAtLogin;
+  const loginChanged = next.launchAtLogin !== registeredAtLogin;
   if (loginChanged && (!app.isPackaged || process.env.PORTABLE_EXECUTABLE_FILE)) {
     throw new Error('开机启动需要先安装安装版；便携版和开发模式请手动启动。');
   }
@@ -286,7 +301,7 @@ else {
     settingsFile = path.join(app.getPath('userData'), 'settings.json');
     const loaded = readSettings(settingsFile);
     settings = loaded.settings;
-    if (!app.isPackaged || process.env.PORTABLE_EXECUTABLE_FILE) settings.launchAtLogin = false;
+    settings.launchAtLogin = readLaunchAtLogin(settings.launchAtLogin);
     controller = new PatrolController({ settings, geometry: getPatrolGeometry(selectedDisplay(), settings) });
     registerIPC(); createPet();
     tray = new Tray(nativeImage.createFromPath(path.join(assets, 'hare-idle.png')).resize({ width: 30, height: 32 }));

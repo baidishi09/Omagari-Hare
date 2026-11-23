@@ -10,8 +10,8 @@
 
 打包后可运行以下任意一种：
 
-- **便携版**：`release/Omagari-Hare-0.1.0-x64-portable.exe`，直接双击。
-- **安装版**：`release/Omagari-Hare-0.1.0-x64-nsis.exe`，安装后启动“小钩晴”；安装版可在设置中选择随 Windows 登录启动。
+- **便携版**：`release/Omagari-Hare-0.1.1-x64-portable.exe`，直接双击。
+- **安装版**：`release/Omagari-Hare-0.1.1-x64-nsis.exe`，安装后启动“小钩晴”；安装版可在设置中选择随 Windows 登录启动。
 
 这些路径是本地构建输出，不代表已在 GitHub 发布可下载文件。首次启动会打开工位主页；之后可右键桌面角色或点击系统托盘图标再次打开。点击主页的设置按钮或工程便签都能展开设置抽屉。关闭主页窗口后桌宠仍在运行，从托盘选择“退出小钩晴”结束程序。
 
@@ -68,6 +68,7 @@ npm test
 npm run check
 npm run test:integration
 npm run test:ui
+npm run test:layout
 npm run dist
 ```
 
@@ -77,6 +78,9 @@ npm run dist
 | `npm run check` | JavaScript 语法及动画图集规格检查 |
 | `npm run test:integration` | Playwright 启动 Electron，检查窗口、渲染、设置及行为；临时资料和产物放在忽略提交的 `test-results/` |
 | `npm run test:ui` | 检查工位主页、设置抽屉及相关界面交互；实际通过情况见验证记录 |
+| `npm run test:layout` | 检查多种窗口比例、200% 缩放、角色脚底站位、内容碰撞和抽屉滚动 |
+| `npm run test:packaged` | 构建后检查 `release/win-unpacked/` 内真实 EXE 的场景、动画与巡游 |
+| `npm run screenshots` | 用隔离资料目录与默认 10 分钟设置刷新文档首页及抽屉截图 |
 | `npm run pack` | 生成 `release/win-unpacked/` 开发检查包 |
 | `npm run dist` | 生成 x64 便携版和 NSIS 安装程序 |
 

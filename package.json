@@ -1,6 +1,6 @@
 {
   "name": "omagari-hare",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "小钩晴 · 独立 Windows 桌面伙伴",
   "main": "src/main.cjs",
   "private": true,
@@ -11,6 +11,9 @@
     "test": "node --test test/*.test.cjs",
     "test:integration": "node scripts/integration.cjs",
     "test:ui": "node scripts/ui-smoke.cjs",
+    "test:layout": "node scripts/layout-smoke.cjs",
+    "test:packaged": "node scripts/packaged-smoke.cjs",
+    "screenshots": "node scripts/capture-scenes.cjs",
     "check": "node scripts/check.cjs",
     "icons": "node scripts/build-icon.cjs",
     "pack": "electron-builder --win --dir",

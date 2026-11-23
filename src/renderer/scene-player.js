@@ -25,8 +25,9 @@ export function createScenePlayer(canvas) {
       else expression = undefined;
     }
     const definition = manifest.states[current] || manifest.states.idle;
-    // Pause ambient motion, but keep a directly requested wave or jump usable.
-    if (!expression && (state.paused || state.phase === 'suspended' || motionPreference.matches)) return { row: definition.row, column: 0, delay: null };
+    // Pausing patrol keeps the desktop pet's idle breathing. Only suspended or
+    // reduced-motion previews stop ambient animation.
+    if (!expression && (state.phase === 'suspended' || motionPreference.matches)) return { row: definition.row, column: 0, delay: null };
     const total = definition.durations.reduce((sum, duration) => sum + duration, 0);
     let elapsed = Math.max(0, now - started) % total;
     let column = 0;
@@ -60,7 +61,8 @@ export function createScenePlayer(canvas) {
       if (hiddenAt !== null) {
         const elapsed = performance.now() - hiddenAt;
         animationStarted += elapsed;
-        expressionStarted += elapsed;
+        // Explicit actions follow elapsed real time, like the desktop pet.
+        // Only pause the ambient cycle while this preview is hidden.
         hiddenAt = null;
       }
       render();

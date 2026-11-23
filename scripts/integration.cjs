@@ -123,6 +123,69 @@ async function resizeWorkArea(application, width) {
   }, width);
 }
 
+async function verifyLoginRegistration(application, settingsPage) {
+  // Stub both registry APIs before pretending to be an installed build. These
+  // checks never touch Windows startup registration or the user's real profile.
+  await application.evaluate(({ app }) => {
+    globalThis.__hareLoginTest = {
+      descriptor: Object.getOwnPropertyDescriptor(app, 'isPackaged'),
+      get: app.getLoginItemSettings, set: app.setLoginItemSettings,
+      portable: process.env.PORTABLE_EXECUTABLE_FILE,
+      registered: true, queries: [], writes: [], failWrite: false,
+    };
+    const mock = globalThis.__hareLoginTest;
+    app.getLoginItemSettings = options => {
+      mock.queries.push(options);
+      return { openAtLogin: mock.registered };
+    };
+    app.setLoginItemSettings = options => {
+      if (mock.failWrite) throw new Error('Mock startup registration failure');
+      mock.writes.push(options);
+      mock.registered = options.openAtLogin;
+    };
+    delete process.env.PORTABLE_EXECUTABLE_FILE;
+    Object.defineProperty(app, 'isPackaged', { configurable: true, value: true });
+  });
+  const registry = () => application.evaluate(() => {
+    const mock = globalThis.__hareLoginTest;
+    return { registered: mock.registered, queries: mock.queries, writes: mock.writes, executable: process.execPath };
+  });
+  try {
+    const synced = await save(settingsPage, { speed: 70 });
+    assert.equal(synced.settings.launchAtLogin, true, 'installed build restores actual registration after a portable profile stored false');
+    let mock = await registry();
+    assert.equal(mock.writes.length, 0, 'reading and unrelated settings must not write startup registration');
+    assert.deepEqual(mock.queries.at(-1), { path: mock.executable, args: ['--hidden'] });
+    await save(settingsPage, { launchAtLogin: false });
+    await application.evaluate(() => { globalThis.__hareLoginTest.registered = true; });
+    await save(settingsPage, { launchAtLogin: false });
+    mock = await registry();
+    assert.equal(mock.writes.length, 2, 'explicit disable removes an actual registration even when persisted state was already false');
+    assert.equal(mock.registered, false);
+    await save(settingsPage, { launchAtLogin: true });
+    await application.evaluate(() => { globalThis.__hareLoginTest.registered = false; });
+    const removed = await save(settingsPage, { speed: 80 });
+    assert.equal(removed.settings.launchAtLogin, false, 'external removal is reflected without reenabling startup');
+    assert.equal((await registry()).writes.length, 3);
+    await application.evaluate(() => { globalThis.__hareLoginTest.failWrite = true; });
+    await assert.rejects(save(settingsPage, { launchAtLogin: true }), /Mock startup registration failure/);
+    assert.equal((await getState(settingsPage)).settings.launchAtLogin, false, 'registration failure leaves runtime preference unchanged');
+    assert.equal(JSON.parse(fs.readFileSync(path.join(dataDir, 'settings.json'), 'utf8')).launchAtLogin, false, 'registration failure restores persisted preference');
+  } finally {
+    await application.evaluate(({ app }) => {
+      const mock = globalThis.__hareLoginTest;
+      app.getLoginItemSettings = mock.get;
+      app.setLoginItemSettings = mock.set;
+      if (mock.descriptor) Object.defineProperty(app, 'isPackaged', mock.descriptor);
+      else delete app.isPackaged;
+      if (mock.portable === undefined) delete process.env.PORTABLE_EXECUTABLE_FILE;
+      else process.env.PORTABLE_EXECUTABLE_FILE = mock.portable;
+      delete globalThis.__hareLoginTest;
+    });
+  }
+  console.log('Passed: actual startup registration reconciliation, explicit disable, external removal, and failed registration rollback (mocked registry only).');
+}
+
 async function main() {
   let expectedSettings;
   let session = await launch();
@@ -136,6 +199,7 @@ async function main() {
     assert.equal(pet.webPreferences.nodeIntegration, false);
     assert.equal(pet.webPreferences.contextIsolation, true);
     assert.equal(pet.webPreferences.sandbox, true);
+    await verifyLoginRegistration(application, settingsPage);
 
     let area = await installMocks(application);
     await save(settingsPage, { speed: 180, homeRatio: 0 });

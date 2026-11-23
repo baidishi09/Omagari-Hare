@@ -126,8 +126,10 @@ test('pause cancels movement; unpause waits for fresh input', () => {
   assert.equal(pet.snapshot().x, pet.geometry.homeX);
   assert.equal(pet.startManualWalk().phase, 'paused');
   pet.setSettings(DEFAULT_SETTINGS);
+  assert.equal(pet.snapshot().requireFreshInput, true, 'UI can distinguish waiting for fresh input from a completed patrol');
   assert.equal(advance(pet, 2, 900).phase, 'idle');
   pet.tick({ dtSeconds: 0.05, idleSeconds: 0 });
+  assert.equal(pet.snapshot().requireFreshInput, false);
   assert.equal(pet.tick({ dtSeconds: 0.05, idleSeconds: 600 }).phase, 'outbound');
 });
 
@@ -139,6 +141,7 @@ test('suspend freezes and resume cannot jump or immediately start a new patrol',
   assert.equal(sleeping.phase, 'suspended');
   assert.equal(sleeping.x, before.x);
   pet.setSuspended(false);
+  assert.equal(pet.snapshot().requireFreshInput, true);
   const resumed = pet.tick({ dtSeconds: 1000, idleSeconds: 9001 });
   assert.ok(Math.abs(resumed.x - before.x) <= DEFAULT_SETTINGS.speed * 0.25);
   assert.equal(advance(pet, 60, 9002).phase, 'idle');

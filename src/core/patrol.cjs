@@ -32,6 +32,7 @@ class PatrolController {
       animation: moving ? `running-${this.direction}` : 'idle',
       moving,
       consumedIdle: this.consumedIdle,
+      requireFreshInput: this.requireFreshInput,
       remainingSeconds: Math.max(0, this.settings.idleMinutes * 60 - this.idleSeconds),
     };
   }
